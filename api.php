@@ -202,6 +202,17 @@ if (isset($_GET['enable']) && $auth) {
         default:
             exit('Wrong action');
     }
+} elseif (isset($_GET['togglegroup' && $auth) {
+    if (isset($_GET['auth'])) {
+        if ($_GET['auth'] !== $pwhash) {
+            exit('Not authorized!');
+        }
+    } else {
+        // Skip token validation if explicit auth string is given
+        check_csrf($_GET['token']);
+    }
+    ####
+
 }
 
 // Other API functions
