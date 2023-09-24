@@ -288,10 +288,10 @@ function remove_from_table($db, $table, $domains, $returnnum = false, $type = -1
 
 function toggle_group($groupname)
 {
-    $db = getGravityDBFilename();
+    $db = SQLite3_connect(getGravityDBFilename(), SQLITE3_OPEN_READWRITE);
     $table = 'group';
 
-    if (!($type))   {
+    if (!($groupname))   {
         return 'Error: No group name specified';
     }
 
@@ -306,14 +306,14 @@ function toggle_group($groupname)
 
 
     // Get initial count of domains in this table
-    $countquery = "SELECT COUNT(*) FROM '{$table}' WHERE {$name} = '{$group_name}' ;";
+    $countquery = "SELECT COUNT(*) FROM '{$table}' WHERE name = '{$groupname}' ;";
     $groupcount = intval($db->querySingle($countquery));
     if ($groupcount != 1 ) {
         return 'Error: No group name: $groupname';
     }
-    // Prepare INSERT SQLite statement
+    // Prepare SQLite statement
     $bindcomment = false;
-    $querystr = "UPDATE '{$table} SET enabled = 1-enabled WHERE 'name' = '{$groupname}'";
+    $querystr = "UPDATE '{$table}' SET enabled = 1 - enabled WHERE name = '{$groupname}'";
     $stmt = $db->prepare($querystr);
 
     // Return early if we failed to prepare the SQLite statement
@@ -329,9 +329,11 @@ function toggle_group($groupname)
     $stmt->close();
     $db->exec('COMMIT;');
 
-    if ($returnnum) {
-        return $num;
+    $enablequery = "SELECT enable FROM '{$table}' WHERE name = '{$groupname}' ;";
+    $enableresult = intval($db->querySingle($enablequery));
+    $enabletext = 'disabled';
+    if ($enableresult = 1) {
+        $enabletext = 'enabled';
     }
-
-    return 'Success.';
+    return 'Result: The group ' . $groupname . ' is ' . $enabletext;
 }

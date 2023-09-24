@@ -202,7 +202,7 @@ if (isset($_GET['enable']) && $auth) {
         default:
             exit('Wrong action');
     }
-} elseif (isset($_GET['togglegroup'] && $auth) {
+} elseif (isset($_GET['togglegroup']) && $auth) {
     if (isset($_GET['auth'])) {
         if ($_GET['auth'] !== $pwhash) {
             exit('Not authorized!');
@@ -212,6 +212,7 @@ if (isset($_GET['enable']) && $auth) {
         check_csrf($_GET['token']);
     }
     toggle_group($_GET['togglegroup']);
+    
 
 }
 
