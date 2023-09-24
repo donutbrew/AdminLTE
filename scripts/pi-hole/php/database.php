@@ -284,3 +284,54 @@ function remove_from_table($db, $table, $domains, $returnnum = false, $type = -1
 
     return 'Success, removed '.$num.' domain'.$plural;
 }
+
+
+function toggle_group($groupname)
+{
+    $db = getGravityDBFilename();
+    $table = 'group';
+
+    if (!($type))   {
+        return 'Error: No group name specified';
+    }
+
+    // Begin transaction
+    if (!$db->exec('BEGIN TRANSACTION;')) {
+        if ($returnnum) {
+            return 0;
+        }
+
+        return "Error: Unable to begin transaction for {$table} table.";
+    }
+
+
+    // Get initial count of domains in this table
+    $countquery = "SELECT COUNT(*) FROM '{$table}' WHERE {$name} = '{$group_name}' ;";
+    $groupcount = intval($db->querySingle($countquery));
+    if ($groupcount != 1 ) {
+        return 'Error: No group name: $groupname';
+    }
+    // Prepare INSERT SQLite statement
+    $bindcomment = false;
+    $querystr = "UPDATE '{$table} SET enabled = 1-enabled WHERE 'name' = '{$groupname}'";
+    $stmt = $db->prepare($querystr);
+
+    // Return early if we failed to prepare the SQLite statement
+    if (!$stmt) {
+        if ($returnnum) {
+            return 0;
+        }
+
+        return "Error: Failed to prepare statement for {$table}: {$querystmt}";
+    }
+    
+    $stmt->execute();
+    $stmt->close();
+    $db->exec('COMMIT;');
+
+    if ($returnnum) {
+        return $num;
+    }
+
+    return 'Success.";
+}
