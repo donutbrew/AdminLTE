@@ -333,5 +333,5 @@ function toggle_group($groupname)
         return $num;
     }
 
-    return 'Success.";
+    return 'Success.';
 }
